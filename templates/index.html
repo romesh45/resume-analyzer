@@ -461,7 +461,7 @@
         <line x1="12" y1="8" x2="12" y2="12"></line>
         <line x1="12" y1="16" x2="12.01" y2="16"></line>
       </svg>
-      <span id="error-text">{{ error }}</span>
+      <span id="error-text">{{ error or '' }}</span>
     </div>
 
     <!-- Input Form -->
@@ -500,17 +500,18 @@
 
     <!-- Results Section -->
     {% if result %}
+    {% set score_val = result.get('overall_score', 0) %}
     <div id="results" class="card results-card 
-      {% if result.overall_score >= 80 %}score-high
-      {% elif result.overall_score >= 50 %}score-medium
+      {% if score_val >= 80 %}score-high
+      {% elif score_val >= 50 %}score-medium
       {% else %}score-low{% endif %}">
 
       <div class="results-header">
         <div class="score-container">
-          <div class="score-circle">{{ result.overall_score }}</div>
-          <div class="match-pct">{{ result.match_percentage }}% Match</div>
+          <div class="score-circle">{{ result.get('overall_score', 0) }}</div>
+          <div class="match-pct">{{ result.get('match_percentage', 0) }}% Match</div>
         </div>
-        <p class="feedback-msg">"{{ result.feedback }}"</p>
+        <p class="feedback-msg">"{{ result.get('feedback', '') }}"</p>
       </div>
 
       <div class="skills-grid">
@@ -523,9 +524,10 @@
             </svg>
             Matched Skills
           </h3>
-          {% if result.details.matched_skills %}
+          {% set details = result.get('details', {}) %}
+          {% if details.get('matched_skills') %}
           <div class="pill-container">
-            {% for skill in result.details.matched_skills %}
+            {% for skill in details.matched_skills %}
             <span class="pill pill-matched">{{ skill }}</span>
             {% endfor %}
           </div>
@@ -544,9 +546,10 @@
             </svg>
             Missing Skills
           </h3>
-          {% if result.details.missing_skills %}
+          {% set details = result.get('details', {}) %}
+          {% if details.get('missing_skills') %}
           <div class="pill-container">
-            {% for skill in result.details.missing_skills %}
+            {% for skill in details.missing_skills %}
             <span class="pill pill-missing">{{ skill }}</span>
             {% endfor %}
           </div>
@@ -578,28 +581,33 @@
     const jdText = document.getElementById('job_description');
 
     form.addEventListener('submit', (e) => {
-      const hasFile = resumeFile.files.length > 0;
-      const hasText = resumeText.value.trim().length > 0;
-      const hasJD = jdText.value.trim().length > 0;
+      try {
+        const hasFile = resumeFile.files.length > 0;
+        const hasText = resumeText.value.trim().length > 0;
+        const hasJD = jdText.value.trim().length > 0;
 
-      // Validate resume input
-      if (!hasFile && !hasText) {
-        e.preventDefault();
-        showError('Please upload a PDF or paste your resume text.');
-        return;
+        // Validate resume input
+        if (!hasFile && !hasText) {
+          e.preventDefault();
+          showError('Please upload a PDF or paste your resume text.');
+          return;
+        }
+
+        // Validate JD input
+        if (!hasJD) {
+          e.preventDefault();
+          showError('Please paste a job description to compare against.');
+          return;
+        }
+
+        // All good — hide errors and show loading
+        errorBox.style.display = 'none';
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
+      } catch (err) {
+        // If validation JS fails, let the form submit to server-side validation
+        console.error('Client validation error:', err);
       }
-
-      // Validate JD input
-      if (!hasJD) {
-        e.preventDefault();
-        showError('Please paste a job description to compare against.');
-        return;
-      }
-
-      // All good — hide errors and show loading
-      errorBox.style.display = 'none';
-      submitBtn.classList.add('loading');
-      submitBtn.disabled = true;
     });
 
     function showError(msg) {

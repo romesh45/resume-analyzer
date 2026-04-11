@@ -11,6 +11,7 @@ from src.scorer import score
 
 _BASE_DIR = Path(__file__).resolve().parent.parent
 app = Flask(__name__, template_folder=str(_BASE_DIR / "templates"))
+app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # 5 MB upload limit
 
 SKILLS_PATH = _BASE_DIR / "data" / "skills.json"
 
