@@ -44,15 +44,15 @@
 
 **Input — Upload resume + paste job description**
 
-![Aura ATS Input UI](docs/ui-input.png)
+![Aura ATS Input UI](docs/input.png)
 
 **Output — Match score: 80% with skill gap breakdown**
 
-![Aura ATS Result 80](docs/ui-result-80.png)
+![Aura ATS Result 80](docs/result-80.png)
 
 **Output — Perfect match: 100% with no gaps detected**
 
-![Aura ATS Result 100](docs/ui-result-100.png)
+![Aura ATS Result 100](docs/result-100.png)
 
 ---
 
