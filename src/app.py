@@ -33,7 +33,6 @@ def index():
         jd_raw = request.form.get("job_description", "")
 
         try:
-            # Handle PDF upload if a file was selected
             if resume_file and resume_file.filename:
                 resume_raw = extract_text(resume_file)
 
@@ -45,23 +44,18 @@ def index():
             if not error:
                 resume_clean = normalize_text(resume_raw)
                 jd_clean = normalize_text(jd_raw)
-
                 catalog = _load_skills_catalog()
                 analysis = analyze_resume(resume_clean, jd_clean, catalog)
                 result = score(analysis)
         except Exception as e:
-            error = f"Error processing input: {str(e)}"
+            error = f"Error processing input: {e}"
 
     return render_template("index.html", result=result, error=error)
 
 
-def create_app():
-    return app
-
-
 @app.route("/api/v1/analyze", methods=["POST"])
 def api_analyze():
-    """REST API endpoint for headless ATS integrations."""
+    """REST API endpoint for headless integrations."""
     if not request.is_json:
         return jsonify({"error": "Request must be JSON"}), 415
 

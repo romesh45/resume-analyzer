@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* ── CSS Variables & Reset ──────────────────────── */
     :root {
       --primary: #4f46e5;
       --primary-hover: #4338ca;
@@ -18,19 +17,15 @@
       --text-main: #0f172a;
       --text-muted: #64748b;
       --border: #e2e8f0;
-
       --success-bg: #dcfce7;
       --success-text: #166534;
       --warning-bg: #fef9c3;
       --warning-text: #854d0e;
       --danger-bg: #fee2e2;
       --danger-text: #991b1b;
-      --gap: 1.5rem;
     }
 
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -50,7 +45,6 @@
       padding: 3rem 1rem;
     }
 
-    /* ── Typography & Header ────────────────────────── */
     .header {
       text-align: center;
       margin-bottom: 2.5rem;
@@ -71,7 +65,6 @@
       font-size: 1.1rem;
     }
 
-    /* ── Layout & Cards ─────────────────────────────── */
     .container {
       width: 100%;
       max-width: 800px;
@@ -85,12 +78,10 @@
       border: 1px solid rgba(255, 255, 255, 0.5);
       padding: 2rem;
       margin-bottom: 2rem;
-      transition: transform 0.3s ease;
     }
 
-    /* ── Form Elements ──────────────────────────────── */
     .form-group {
-      margin-bottom: var(--gap);
+      margin-bottom: 1.5rem;
     }
 
     label {
@@ -101,12 +92,7 @@
       color: #334155;
     }
 
-    .input-wrapper {
-      position: relative;
-    }
-
-    textarea,
-    input[type="file"] {
+    textarea, input[type="file"] {
       width: 100%;
       background: #f8fafc;
       border: 1px solid var(--border);
@@ -115,7 +101,7 @@
       font-family: inherit;
       font-size: 0.95rem;
       color: var(--text-main);
-      transition: all 0.2s ease;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     textarea {
@@ -127,18 +113,14 @@
       min-height: 180px;
     }
 
-    textarea:focus,
-    input[type="file"]:focus {
+    textarea:focus, input[type="file"]:focus {
       outline: none;
       background: var(--surface);
       border-color: var(--primary);
       box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
     }
 
-    /* File Input Styling tweaks */
-    input[type="file"] {
-      cursor: pointer;
-    }
+    input[type="file"] { cursor: pointer; }
 
     input[type="file"]::file-selector-button {
       background: var(--surface);
@@ -156,7 +138,6 @@
       background: #f1f5f9;
     }
 
-    /* Divider */
     .divider {
       display: flex;
       align-items: center;
@@ -169,23 +150,16 @@
       letter-spacing: 0.05em;
     }
 
-    .divider::before,
-    .divider::after {
+    .divider::before, .divider::after {
       content: '';
       flex: 1;
       border-bottom: 1px solid var(--border);
     }
 
-    .divider:not(:empty)::before {
-      margin-right: 1em;
-    }
+    .divider:not(:empty)::before { margin-right: 1em; }
+    .divider:not(:empty)::after { margin-left: 1em; }
 
-    .divider:not(:empty)::after {
-      margin-left: 1em;
-    }
-
-    /* Button */
-    button {
+    button[type="submit"] {
       width: 100%;
       background: var(--primary);
       color: #ffffff;
@@ -203,23 +177,20 @@
       box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
     }
 
-    button:hover {
+    button[type="submit"]:hover {
       background: var(--primary-hover);
-      box-shadow: 0 8px 15px -3px rgba(79, 70, 229, 0.4), 0 4px 6px -2px rgba(79, 70, 229, 0.2);
+      box-shadow: 0 8px 15px -3px rgba(79, 70, 229, 0.4);
     }
 
-    button:active {
-      transform: scale(0.98);
-    }
+    button[type="submit"]:active { transform: scale(0.98); }
 
-    button:disabled {
+    button[type="submit"]:disabled {
       background: #94a3b8;
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
     }
 
-    /* Spinner Animation */
     .spinner {
       display: none;
       width: 20px;
@@ -230,42 +201,19 @@
       animation: spin 1s ease-in-out infinite;
     }
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    button.loading .spinner {
-      display: block;
-    }
+    button.loading .spinner { display: block; }
+    button.loading .btn-text { display: none; }
 
-    button.loading .btn-text {
-      display: none;
-    }
-
-    /* ── Alerts ─────────────────────────────────────── */
+    /* Alerts */
     .alert {
       padding: 1rem 1.25rem;
       border-radius: 8px;
       margin-bottom: 2rem;
       font-weight: 500;
-      display: flex;
       align-items: center;
       gap: 0.75rem;
-      animation: slideIn 0.3s ease-out;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
     .alert-danger {
@@ -274,22 +222,15 @@
       border: 1px solid #f87171;
     }
 
-    /* ── Results UI ─────────────────────────────────── */
+    /* Results */
     .results-card {
       border-top: 4px solid var(--primary);
-      animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: slideUp 0.5s ease;
     }
 
     @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .results-header {
@@ -301,7 +242,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       margin-bottom: 1rem;
     }
 
@@ -316,34 +256,28 @@
       font-weight: 800;
       margin-bottom: 0.5rem;
       box-shadow: inset 0 0 0 8px rgba(0, 0, 0, 0.05);
-      animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: popIn 0.6s ease forwards;
       opacity: 0;
       transform: scale(0.8);
     }
 
     @keyframes popIn {
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+      to { opacity: 1; transform: scale(1); }
     }
 
     .score-high .score-circle {
       background: var(--success-bg);
       color: var(--success-text);
-      box-shadow: inset 0 0 0 8px rgba(22, 101, 52, 0.1);
     }
 
     .score-medium .score-circle {
       background: var(--warning-bg);
       color: var(--warning-text);
-      box-shadow: inset 0 0 0 8px rgba(133, 77, 14, 0.1);
     }
 
     .score-low .score-circle {
       background: var(--danger-bg);
       color: var(--danger-text);
-      box-shadow: inset 0 0 0 8px rgba(153, 27, 27, 0.1);
     }
 
     .match-pct {
@@ -367,9 +301,7 @@
     }
 
     @media (max-width: 600px) {
-      .skills-grid {
-        grid-template-columns: 1fr;
-      }
+      .skills-grid { grid-template-columns: 1fr; }
     }
 
     .skill-box {
@@ -388,13 +320,8 @@
       gap: 0.5rem;
     }
 
-    .skill-box.matched h3 {
-      color: var(--success-text);
-    }
-
-    .skill-box.missing h3 {
-      color: var(--danger-text);
-    }
+    .skill-box.matched h3 { color: var(--success-text); }
+    .skill-box.missing h3 { color: var(--danger-text); }
 
     .pill-container {
       display: flex;
@@ -454,41 +381,47 @@
     </div>
 
     <!-- Error Alert -->
-    <div id="error-box" class="alert alert-danger" style="display: {% if error %}flex{% else %}none{% endif %};">
+    {% if error %}
+    <div id="error-box" class="alert alert-danger" style="display: flex;">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"></circle>
         <line x1="12" y1="8" x2="12" y2="12"></line>
         <line x1="12" y1="16" x2="12.01" y2="16"></line>
       </svg>
-      <span id="error-text">{{ error or '' }}</span>
+      <span id="error-text">{{ error }}</span>
     </div>
+    {% else %}
+    <div id="error-box" class="alert alert-danger" style="display: none;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <span id="error-text"></span>
+    </div>
+    {% endif %}
 
     <!-- Input Form -->
     <form class="card" method="POST" action="/" enctype="multipart/form-data" id="analyzer-form">
 
       <div class="form-group">
         <label for="resume_file">1. Upload Resume (PDF)</label>
-        <div class="input-wrapper">
-          <input type="file" id="resume_file" name="resume_file" accept=".pdf" />
-        </div>
+        <input type="file" id="resume_file" name="resume_file" accept=".pdf" />
       </div>
 
       <div class="divider">OR PASTE TEXT</div>
 
       <div class="form-group">
-        <div class="input-wrapper">
-          <textarea id="resume_text" name="resume_text"
-            placeholder="Paste your raw resume content here...">{{ request.form.get('resume_text', '') }}</textarea>
-        </div>
+        <textarea id="resume_text" name="resume_text"
+          placeholder="Paste your raw resume content here...">{{ request.form.get('resume_text', '') }}</textarea>
       </div>
 
       <div class="form-group">
         <label for="job_description">2. Job Description</label>
-        <div class="input-wrapper">
-          <textarea id="job_description" name="job_description"
-            placeholder="Paste the job description or required skills here...">{{ request.form.get('job_description', '') }}</textarea>
-        </div>
+        <textarea id="job_description" name="job_description"
+          placeholder="Paste the job description or required skills here...">{{ request.form.get('job_description', '') }}</textarea>
       </div>
 
       <button type="submit" id="submit-btn">
@@ -498,20 +431,19 @@
 
     </form>
 
-    <!-- Results Section -->
+    <!-- Results -->
     {% if result %}
-    {% set score_val = result.get('overall_score', 0) %}
-    <div id="results" class="card results-card 
-      {% if score_val >= 80 %}score-high
-      {% elif score_val >= 50 %}score-medium
+    <div id="results" class="card results-card
+      {% if result.overall_score >= 80 %}score-high
+      {% elif result.overall_score >= 50 %}score-medium
       {% else %}score-low{% endif %}">
 
       <div class="results-header">
         <div class="score-container">
-          <div class="score-circle">{{ result.get('overall_score', 0) }}</div>
-          <div class="match-pct">{{ result.get('match_percentage', 0) }}% Match</div>
+          <div class="score-circle">{{ result.overall_score }}</div>
+          <div class="match-pct">{{ result.match_percentage }}% Match</div>
         </div>
-        <p class="feedback-msg">"{{ result.get('feedback', '') }}"</p>
+        <p class="feedback-msg">"{{ result.feedback }}"</p>
       </div>
 
       <div class="skills-grid">
@@ -524,10 +456,9 @@
             </svg>
             Matched Skills
           </h3>
-          {% set details = result.get('details', {}) %}
-          {% if details.get('matched_skills') %}
+          {% if result.details and result.details.matched_skills %}
           <div class="pill-container">
-            {% for skill in details.matched_skills %}
+            {% for skill in result.details.matched_skills %}
             <span class="pill pill-matched">{{ skill }}</span>
             {% endfor %}
           </div>
@@ -546,10 +477,9 @@
             </svg>
             Missing Skills
           </h3>
-          {% set details = result.get('details', {}) %}
-          {% if details.get('missing_skills') %}
+          {% if result.details and result.details.missing_skills %}
           <div class="pill-container">
-            {% for skill in details.missing_skills %}
+            {% for skill in result.details.missing_skills %}
             <span class="pill pill-missing">{{ skill }}</span>
             {% endfor %}
           </div>
@@ -570,60 +500,50 @@
   </div>
 
   <script>
-    // Client-side validation & loading state
     const form = document.getElementById('analyzer-form');
     const resumeFile = document.getElementById('resume_file');
     const resumeText = document.getElementById('resume_text');
+    const jdText = document.getElementById('job_description');
     const submitBtn = document.getElementById('submit-btn');
     const errorBox = document.getElementById('error-box');
-    const errorText = document.getElementById('error-text');
+    const errorTextEl = document.getElementById('error-text');
 
-    const jdText = document.getElementById('job_description');
+    form.addEventListener('submit', function (e) {
+      var hasFile = resumeFile.files.length > 0;
+      var hasText = resumeText.value.trim().length > 0;
+      var hasJD = jdText.value.trim().length > 0;
 
-    form.addEventListener('submit', (e) => {
-      try {
-        const hasFile = resumeFile.files.length > 0;
-        const hasText = resumeText.value.trim().length > 0;
-        const hasJD = jdText.value.trim().length > 0;
-
-        // Validate resume input
-        if (!hasFile && !hasText) {
-          e.preventDefault();
-          showError('Please upload a PDF or paste your resume text.');
-          return;
-        }
-
-        // Validate JD input
-        if (!hasJD) {
-          e.preventDefault();
-          showError('Please paste a job description to compare against.');
-          return;
-        }
-
-        // All good — hide errors and show loading
-        errorBox.style.display = 'none';
-        submitBtn.classList.add('loading');
-        submitBtn.disabled = true;
-      } catch (err) {
-        // If validation JS fails, let the form submit to server-side validation
-        console.error('Client validation error:', err);
+      if (!hasFile && !hasText) {
+        e.preventDefault();
+        showError('Please upload a PDF or paste your resume text.');
+        return;
       }
+
+      if (!hasJD) {
+        e.preventDefault();
+        showError('Please provide a job description.');
+        return;
+      }
+
+      errorBox.style.display = 'none';
+      submitBtn.classList.add('loading');
+      submitBtn.disabled = true;
     });
 
     function showError(msg) {
-      errorText.textContent = msg;
+      errorTextEl.textContent = msg;
       errorBox.style.display = 'flex';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Reset loading state on page reveal (fixes back button caching)
-    window.addEventListener('pageshow', () => {
+    // Fix back-button caching (bfcache)
+    window.addEventListener('pageshow', function () {
       submitBtn.classList.remove('loading');
       submitBtn.disabled = false;
     });
 
-    // Auto-scroll to results if they exist
-    const resultsEl = document.getElementById('results');
+    // Auto-scroll to results
+    var resultsEl = document.getElementById('results');
     if (resultsEl) {
       resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
