@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 
 from src.analyzer import analyze_resume
 from src.preprocess import extract_text, normalize_text
@@ -56,6 +56,32 @@ def index():
 
 def create_app():
     return app
+
+
+@app.route("/api/v1/analyze", methods=["POST"])
+def api_analyze():
+    """REST API endpoint for headless ATS integrations."""
+    if not request.is_json:
+        return jsonify({"error": "Request must be JSON"}), 415
+
+    data = request.get_json()
+    resume_text = data.get("resume_text", "")
+    jd_text = data.get("job_description", "")
+
+    if not resume_text.strip():
+        return jsonify({"error": "Missing resume_text"}), 400
+    if not jd_text.strip():
+        return jsonify({"error": "Missing job_description"}), 400
+
+    try:
+        resume_clean = normalize_text(resume_text)
+        jd_clean = normalize_text(jd_text)
+        catalog = _load_skills_catalog()
+        analysis = analyze_resume(resume_clean, jd_clean, catalog)
+        result = score(analysis)
+        return jsonify({"status": "success", "data": result}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":
