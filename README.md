@@ -1,88 +1,137 @@
-# Aura ATS — Intelligent Resume Scoring Engine
+# Aura ATS — AI Resume Analyzer
 
-A lightweight, pipeline-driven Applicant Tracking System (ATS) that executes deterministic NLP matching between resumes and targeted job descriptions. Engineered with Flask and pure Python to demonstrate modular system design, robust input handling, and clear separation of concerns.
+Scores resumes against job descriptions using rule-based NLP. Upload a PDF or paste text, get an instant match score with skill gap analysis.
 
 ![Python](https://img.shields.io/badge/Python-3.9+-3776AB?logo=python&logoColor=white)
-![Flask](https://img.shields.io/badge/Flask-3.0+-000000?logo=flask&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-3.x-000000?logo=flask&logoColor=white)
+![Tests](https://img.shields.io/badge/Tests-12%20passing-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-<!-- Replace with your actual screenshot path inside docs/ -->
-<!-- ![Aura ATS Interface](docs/screenshot-results-high.png) -->
+<!-- Uncomment after adding screenshots to docs/ -->
+<!-- ![Aura ATS Demo](docs/screenshot-results.png) -->
 
 ---
 
-## 🏗️ System Architecture
+## Features
 
-Aura ATS is designed as a modular text-processing pipeline rather than a monolithic web app. The architecture guarantees deterministic outputs and scalable logic separation:
+- **Resume ↔ JD Matching** — Extracts skills from both inputs, computes overlap percentage
+- **PDF Upload** — Parses uploaded resumes via PyPDF2 (text-based PDFs)
+- **Skill Gap Analysis** — Shows matched skills (green) and missing skills (red) as visual pills
+- **Tiered Scoring** — 0–100 score with feedback: Strong Fit / Moderate Fit / Poor Fit
+- **Dual Validation** — Client-side JS + server-side Flask prevents all empty/invalid submissions
+- **Deploy-Ready** — Works with Gunicorn out of the box
 
-```text
-[Input Layer]         [Preprocessing Layer]         [Analysis Engine]           [Scoring & Rendering]
-                      
-PDF/Text Upload  ──→  PyPDF2 Stream Extraction ──→  O(N) Keyword Parsing   ──→  Weighted Match Calculation
-                      (Whitespace Normalization)    (Category-Aware Lookup)     (Gap Analysis Generation)
-Job Description  ──→  Text Sanitization        ──┘                              Jinja2 Server-Side Logic
+---
+
+## How to Use
+
+1. **Paste or upload** your resume (PDF or raw text)
+2. **Paste** the target job description
+3. **Click** "Analyze Fit"
+4. **Review** your match score, matched skills, and missing skills
+
+---
+
+## Architecture
+
+The system is built as a four-stage pipeline with strict separation of concerns:
+
+```
+Input  ──→  Preprocess  ──→  Analyze  ──→  Score & Render
 ```
 
----
-
-## ⚡ Engineering Highlights
-
-- **Modular Pipeline:** Distinct separation between file processing (`preprocess.py`), statistical extraction (`analyzer.py`), and weighting algorithms (`scorer.py`).
-- **Defensive File Handling:** Prevents PyPDF2 stream-pointer exhaustion issues during Flask upload cycles using explicit `file.seek(0)` resets and `NoneType` guards.
-- **Fail-Safe Validation:** Dual-layer validation (Vanilla JS client-side + Flask server-side) completely prevents silent failures on empty or corrupted payloads.
-- **Zero-Dependency NLP:** Executes 100% accurate, rule-based exact and substring mapping without the bloat of heavy ML transformers.
-- **Production Configured:** Structured with absolute base paths (`_BASE_DIR`) resolving dynamically, ensuring seamless compatibility with Gunicorn/WSGI runners.
-- **100% Edge-Case Test Coverage:** 12 automated unit tests validating boundary cases including zero-overlap, empty texts, and perfect matches.
+| Stage | File | Responsibility |
+|-------|------|---------------|
+| **Extract** | `preprocess.py` | PDF text extraction, whitespace normalization |
+| **Analyze** | `analyzer.py` | Skill matching against `skills.json` catalog |
+| **Score** | `scorer.py` | Match percentage calculation, feedback generation |
+| **Serve** | `app.py` | Flask routing, input validation, template rendering |
 
 ---
 
-## 🚀 Setup & Installation
+## Engineering Highlights
 
-**Prerequisites:** Python 3.9+
+- **Modular pipeline** — Each stage is independently testable and replaceable
+- **Defensive file handling** — `file.seek(0)` resets and `None` guards prevent PDF stream corruption
+- **Dual-layer validation** — JS client-side + Flask server-side; the app never crashes on bad input
+- **Zero heavy dependencies** — Pure Python NLP without spaCy or ML libraries
+- **Absolute path resolution** — `_BASE_DIR` pattern ensures Gunicorn/WSGI compatibility
+- **12 unit tests** — Full edge-case coverage: empty inputs, partial matches, perfect matches, zero overlap
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Backend | Python, Flask |
+| PDF Parsing | PyPDF2 |
+| NLP | Regex + custom keyword matcher |
+| Frontend | HTML5, CSS3 (glassmorphism), Vanilla JS |
+| Templating | Jinja2 |
+| Production | Gunicorn |
+
+---
+
+## Setup
 
 ```bash
-# Clone the repository
 git clone https://github.com/romesh45/resume-analyzer.git
 cd resume-analyzer
-
-# Install minimal dependencies
 pip install -r requirements.txt
-
-# Start the Flask development server
 python -m flask --app src.app run --port 5000
 ```
 
-Navigate to `http://127.0.0.1:5000` to interact with the engine.
+Open [http://localhost:5000](http://localhost:5000)
 
-### 🧪 Running the Test Suite
+### Run Tests
+
 ```bash
 python -m unittest tests.test_scorer -v
 ```
 
 ---
 
-## 🌐 Production Deployment (Render / WSGI)
+## Deploy to Render
 
-This application is WSGI-ready and optimized for standard PaaS providers like Render or Heroku.
-
-1. Connect your repository to Render via a **New Web Service**.
-2. Apply the following configurations:
-    - **Environment:** Python 3
-    - **Build Command:** `pip install -r requirements.txt`
-    - **Start Command:** `gunicorn src.app:app`
-3. Deploy.
+| Setting | Value |
+|---------|-------|
+| Environment | Python 3 |
+| Build Command | `pip install -r requirements.txt` |
+| Start Command | `gunicorn src.app:app` |
 
 ---
 
-## 🔮 Future Roadmap
+## Project Structure
 
-- **Vector-Based Semantic Search:** Integrating `sentence-transformers` to match conceptual synonyms (e.g., mapping "ReactJS" to "frontend framework").
-- **Batch Processing:** Exposing a `/api/v1/analyze/batch` RESTful endpoint for background processing of multiple candidates against a single JD.
-- **Database Persistence:** Attaching SQLite/PostgreSQL to track historical candidate scores over time.
+```
+resume-analyzer/
+├── src/
+│   ├── app.py            # Flask routes + request handling
+│   ├── preprocess.py     # PDF extraction + text normalization
+│   ├── analyzer.py       # Skill extraction + JD comparison
+│   └── scorer.py         # Scoring engine + feedback logic
+├── templates/
+│   └── index.html        # UI: form, validation, results display
+├── data/
+│   └── skills.json       # Skills catalog (extensible)
+├── tests/
+│   └── test_scorer.py    # 12 unit tests
+├── requirements.txt
+└── README.md
+```
 
 ---
 
-## 👨‍💻 Author
+## Future Improvements
 
-**Romesh**  
-[GitHub Profile](https://github.com/romesh45)
+- Semantic matching via sentence-transformers (synonym support)
+- REST API endpoint (`/api/v1/analyze`) for headless integrations
+- Multi-format support (DOCX, TXT)
+- Historical tracking with SQLite
+
+---
+
+## Author
+
+**Romesh** — [github.com/romesh45](https://github.com/romesh45)
