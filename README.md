@@ -44,15 +44,18 @@
 
 **Input — Upload resume + paste job description**
 
-![Aura ATS Input UI](docs/input.png)
+![Aura ATS Input UI](<img width="1710" height="1112" alt="Screenshot 2026-04-11 at 8 52 41 PM" src="https://github.com/user-attachments/assets/c42d7887-9abc-4583-8c0a-e2e31abcc5c4" />
+)
 
 **Output — Match score: 80% with skill gap breakdown**
 
-![Aura ATS Result 80](docs/result-80.png)
+![Aura ATS Result 80](<img width="1710" height="1112" alt="Screenshot 2026-04-11 at 9 33 56 PM" src="https://github.com/user-attachments/assets/bab1a94e-cf00-4312-a196-504995a817a7" />
+)
 
 **Output — Perfect match: 100% with no gaps detected**
 
-![Aura ATS Result 100](docs/result-100.png)
+![Aura ATS Result 100](<img width="1710" height="1112" alt="Screenshot 2026-04-11 at 9 34 24 PM" src="https://github.com/user-attachments/assets/d1a965d9-0ea6-4f1e-bf9d-e5ae7a6c625c" />
+)
 
 ---
 
