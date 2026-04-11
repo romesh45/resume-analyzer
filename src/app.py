@@ -38,9 +38,9 @@ def index():
                 resume_raw = extract_text(resume_file)
 
             if not resume_raw.strip():
-                error = "No text found. Please paste your resume or upload a text-based PDF."
+                error = "Please provide resume text or upload a PDF."
             elif not jd_raw.strip():
-                error = "Please provide a job description to compare against."
+                error = "Please provide a job description."
 
             if not error:
                 resume_clean = normalize_text(resume_raw)
