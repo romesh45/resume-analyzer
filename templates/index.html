@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aura ATS | AI Resume Analyzer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── CSS Variables & Reset ──────────────────────── */
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+
+      --success-bg: #dcfce7;
+      --success-text: #166534;
+      --warning-bg: #fef9c3;
+      --warning-text: #854d0e;
+      --danger-bg: #fee2e2;
+      --danger-text: #991b1b;
+      --gap: 1.5rem;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      background-image: radial-gradient(at 100% 0%, hsla(253, 16%, 7%, 0.04) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, hsla(225, 39%, 30%, 0.04) 0px, transparent 50%);
+      color: var(--text-main);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1rem;
+    }
+
+    /* ── Typography & Header ────────────────────────── */
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      background: linear-gradient(135deg, #312e81, #4f46e5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    /* ── Layout & Cards ─────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 10px 15px -3px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease;
+    }
+
+    /* ── Form Elements ──────────────────────────────── */
+    .form-group {
+      margin-bottom: var(--gap);
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      color: #334155;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    textarea,
+    input[type="file"] {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      transition: all 0.2s ease;
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    textarea:focus,
+    input[type="file"]:focus {
+      outline: none;
+      background: var(--surface);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    }
+
+    /* File Input Styling tweaks */
+    input[type="file"] {
+      cursor: pointer;
+    }
+
+    input[type="file"]::file-selector-button {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      margin-right: 1rem;
+      color: var(--text-main);
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+      background: #f1f5f9;
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 1rem 0;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .divider:not(:empty)::before {
+      margin-right: 1em;
+    }
+
+    .divider:not(:empty)::after {
+      margin-left: 1em;
+    }
+
+    /* Button */
+    button {
+      width: 100%;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+    }
+
+    button:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Spinner Animation */
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    button.loading .spinner {
+      display: block;
+    }
+
+    button.loading .btn-text {
+      display: none;
+    }
+
+    /* ── Alerts ─────────────────────────────────────── */
+    .alert {
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert-danger {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid #f87171;
+    }
+
+    /* ── Results UI ─────────────────────────────────── */
+    .results-card {
+      border-top: 4px solid var(--primary);
+      animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .results-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .score-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .score-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      box-shadow: inset 0 0 0 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .score-high .score-circle {
+      background: var(--success-bg);
+      color: var(--success-text);
+      box-shadow: inset 0 0 0 8px rgba(22, 101, 52, 0.1);
+    }
+
+    .score-medium .score-circle {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      box-shadow: inset 0 0 0 8px rgba(133, 77, 14, 0.1);
+    }
+
+    .score-low .score-circle {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      box-shadow: inset 0 0 0 8px rgba(153, 27, 27, 0.1);
+    }
+
+    .match-pct {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .feedback-msg {
+      font-size: 1.1rem;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .skill-box {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .skill-box h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .skill-box.matched h3 {
+      color: var(--success-text);
+    }
+
+    .skill-box.missing h3 {
+      color: var(--danger-text);
+    }
+
+    .pill-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .pill {
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .pill-matched {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 1px solid rgba(22, 101, 52, 0.2);
+    }
+
+    .pill-missing {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid rgba(153, 27, 27, 0.2);
+    }
+
+    .empty-note {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="header">
+      <h1>Aura ATS</h1>
+      <p>Instant Resume vs. Job Description Analysis</p>
+    </div>
+
+    <!-- Error Alert -->
+    <div id="error-box" class="alert alert-danger" style="display: {% if error %}flex{% else %}none{% endif %};">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <span id="error-text">{{ error }}</span>
+    </div>
+
+    <!-- Input Form -->
+    <form class="card" method="POST" action="/" enctype="multipart/form-data" id="analyzer-form">
+
+      <div class="form-group">
+        <label for="resume_file">1. Upload Resume (PDF)</label>
+        <div class="input-wrapper">
+          <input type="file" id="resume_file" name="resume_file" accept=".pdf" />
+        </div>
+      </div>
+
+      <div class="divider">OR PASTE TEXT</div>
+
+      <div class="form-group">
+        <div class="input-wrapper">
+          <textarea id="resume_text" name="resume_text"
+            placeholder="Paste your raw resume content here...">{{ request.form.get('resume_text', '') }}</textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="job_description">2. Job Description</label>
+        <div class="input-wrapper">
+          <textarea id="job_description" name="job_description"
+            placeholder="Paste the job description or required skills here...">{{ request.form.get('job_description', '') }}</textarea>
+        </div>
+      </div>
+
+      <button type="submit" id="submit-btn">
+        <span class="btn-text">Analyze Fit</span>
+        <div class="spinner"></div>
+      </button>
+
+    </form>
+
+    <!-- Results Section -->
+    {% if result %}
+    <div id="results" class="card results-card 
+      {% if result.overall_score >= 80 %}score-high
+      {% elif result.overall_score >= 50 %}score-medium
+      {% else %}score-low{% endif %}">
+
+      <div class="results-header">
+        <div class="score-container">
+          <div class="score-circle">{{ result.overall_score }}</div>
+          <div class="match-pct">{{ result.match_percentage }}% Match</div>
+        </div>
+        <p class="feedback-msg">"{{ result.feedback }}"</p>
+      </div>
+
+      <div class="skills-grid">
+        <!-- Matched Skills -->
+        <div class="skill-box matched">
+          <h3>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            Matched Skills
+          </h3>
+          {% if result.details.matched_skills %}
+          <div class="pill-container">
+            {% for skill in result.details.matched_skills %}
+            <span class="pill pill-matched">{{ skill }}</span>
+            {% endfor %}
+          </div>
+          {% else %}
+          <p class="empty-note">No matching skills found.</p>
+          {% endif %}
+        </div>
+
+        <!-- Missing Skills -->
+        <div class="skill-box missing">
+          <h3>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+            Missing Skills
+          </h3>
+          {% if result.details.missing_skills %}
+          <div class="pill-container">
+            {% for skill in result.details.missing_skills %}
+            <span class="pill pill-missing">{{ skill }}</span>
+            {% endfor %}
+          </div>
+          {% else %}
+          <p class="empty-note">Excellent! No gaps detected.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <script>
+    // Client-side validation & loading state
+    const form = document.getElementById('analyzer-form');
+    const resumeFile = document.getElementById('resume_file');
+    const resumeText = document.getElementById('resume_text');
+    const submitBtn = document.getElementById('submit-btn');
+    const errorBox = document.getElementById('error-box');
+    const errorText = document.getElementById('error-text');
+
+    const jdText = document.getElementById('job_description');
+
+    form.addEventListener('submit', (e) => {
+      const hasFile = resumeFile.files.length > 0;
+      const hasText = resumeText.value.trim().length > 0;
+      const hasJD = jdText.value.trim().length > 0;
+
+      // Validate resume input
+      if (!hasFile && !hasText) {
+        e.preventDefault();
+        showError('Please upload a PDF or paste your resume text.');
+        return;
+      }
+
+      // Validate JD input
+      if (!hasJD) {
+        e.preventDefault();
+        showError('Please paste a job description to compare against.');
+        return;
+      }
+
+      // All good — hide errors and show loading
+      errorBox.style.display = 'none';
+      submitBtn.classList.add('loading');
+      submitBtn.disabled = true;
+    });
+
+    function showError(msg) {
+      errorText.textContent = msg;
+      errorBox.style.display = 'flex';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Reset loading state on page reveal (fixes back button caching)
+    window.addEventListener('pageshow', () => {
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
+    });
+
+    // Auto-scroll to results if they exist
+    const resultsEl = document.getElementById('results');
+    if (resultsEl) {
+      resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  </script>
+</body>
+
+</html>

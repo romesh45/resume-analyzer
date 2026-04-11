@@ -1,0 +1,12 @@
+{
+  "categories": [
+    {
+      "name": "programming",
+      "keywords": ["Python", "JavaScript", "SQL"]
+    },
+    {
+      "name": "ml",
+      "keywords": ["machine learning", "NLP", "PyTorch"]
+    }
+  ]
+}
