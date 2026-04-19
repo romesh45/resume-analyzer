@@ -204,7 +204,7 @@ resume-analyzer/
 
 ## Author
 
-**Romesh** — Final-year IT Engineer | AI/ML Enthusiast
+**Romeshwar** — AI  Enthusiast
 
 [github.com/romesh45](https://github.com/romesh45)
 
