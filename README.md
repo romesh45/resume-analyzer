@@ -204,7 +204,7 @@ resume-analyzer/
 
 ## Author
 
-**Romeshwar** — AI  Enthusiast
+**Romeshwar K** — AI  Enthusiast
 
 [github.com/romesh45](https://github.com/romesh45)
 
