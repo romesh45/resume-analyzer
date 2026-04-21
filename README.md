@@ -202,12 +202,4 @@ resume-analyzer/
 
 ---
 
-## Author
-
-**Romeshwar K** — AI  Enthusiast
-
-[github.com/romesh45](https://github.com/romesh45)
-
----
-
 *Built with Python and Flask. MIT Licensed.*
