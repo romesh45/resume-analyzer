@@ -16,6 +16,10 @@ app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # 5 MB upload limit
 
 SKILLS_PATH = _BASE_DIR / "data" / "skills.json"
 
+# Create necessary directories
+UPLOADS_DIR = _BASE_DIR / "uploads"
+UPLOADS_DIR.mkdir(exist_ok=True)
+
 
 def _load_skills_catalog() -> dict:
     """Load the skills catalog from disk."""
