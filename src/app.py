@@ -1,6 +1,7 @@
 """Web application entry point for the Resume Analyzer."""
 
 import json
+import os
 from pathlib import Path
 
 from flask import Flask, render_template, request, jsonify
@@ -80,4 +81,5 @@ def api_analyze():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    debug_mode = os.getenv("FLASK_ENV", "development") == "development"
+    app.run(debug=debug_mode, host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
