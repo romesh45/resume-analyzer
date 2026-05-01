@@ -49,7 +49,32 @@
 
 ---
 
+## 📸 Screenshots
+
+### Input Form — Upload or Paste Your Resume
+> Enter your resume and job description side-by-side in a clean, minimal interface.
+
+![Aura ATS — Input Form](docs/screenshot-input.png)
+
+---
+
+### Result View — 100% Match
+> When your resume perfectly aligns with the job description — all skills matched, zero gaps.
+
+![Aura ATS — 100% Match Result](docs/screenshot-result-100.png)
+
+---
+
+### Result View — No Match (Skill Gap Detected)
+> When the job description calls for skills outside the catalog — transparent feedback with zero false positives.
+
+![Aura ATS — 0% Match / No Recognizable Skills](docs/screenshot-result-0.png)
+
+---
+
 ## 🏗️ Architecture
+
+### Pipeline Overview
 
 A clean four-stage pipeline with strict separation of concerns:
 
@@ -66,6 +91,78 @@ Input  ──→  Preprocess  ──→  Analyze  ──→  Score & Render
 
 ---
 
+### System Architecture Diagram
+
+```mermaid
+graph TD
+    A[👤 User] -->|PDF / Text| B[Flask App\napp.py]
+    A -->|JSON POST| C[REST API\n/api/v1/analyze]
+
+    B --> D[preprocess.py\nExtract & Normalize]
+    C --> D
+
+    D --> E[analyzer.py\nSkill Extraction]
+    E --> F[(skills.json\nSkill Catalog)]
+    F --> E
+
+    E --> G[scorer.py\nMatch Score & Feedback]
+
+    G -->|HTML Response| H[index.html\nJinja2 Template]
+    G -->|JSON Response| I[API Client]
+
+    H --> J[🖥️ Match Score\nMatched / Missing Skills]
+    I --> K[🔌 Headless Integration]
+
+    style A fill:#6366f1,color:#fff
+    style F fill:#f59e0b,color:#fff
+    style J fill:#10b981,color:#fff
+    style K fill:#10b981,color:#fff
+```
+
+---
+
+### Request Flow Diagram
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant Browser
+    participant Flask as Flask (app.py)
+    participant Pre as Preprocess
+    participant Ana as Analyzer
+    participant Score as Scorer
+
+    User->>Browser: Upload PDF / Paste Text + JD
+    Browser->>Browser: Client-side validation (JS)
+    Browser->>Flask: POST /  (multipart or JSON)
+    Flask->>Flask: Server-side validation
+    Flask->>Pre: extract_text() + normalize_text()
+    Pre-->>Flask: Cleaned resume & JD strings
+    Flask->>Ana: analyze_resume(resume, jd, catalog)
+    Ana->>Ana: _extract_skills() on both texts
+    Ana-->>Flask: matched_skills, missing_skills
+    Flask->>Score: score(analysis)
+    Score-->>Flask: overall_score, feedback, details
+    Flask-->>Browser: Rendered HTML (or JSON for API)
+    Browser-->>User: Score + Skill Gap View
+```
+
+---
+
+### Scoring Logic
+
+```
+match_percentage = (matched_skills / total_jd_skills) × 100
+
+Score ≥ 80  →  "Strong fit"
+Score ≥ 50  →  "Moderate fit — consider adding: X, Y, Z"
+Score  > 0  →  "Poor fit"
+Score  = 0  →  "No match / unrecognized skills"
+```
+
+---
+
 ## 📁 Project Structure
 
 ```
@@ -79,6 +176,10 @@ resume-analyzer/
 │   └── index.html        # UI: form, client-side validation, results display
 ├── data/
 │   └── skills.json       # Extensible skills catalog
+├── docs/
+│   ├── screenshot-input.png
+│   ├── screenshot-result-100.png
+│   └── screenshot-result-0.png
 ├── tests/
 │   └── test_scorer.py    # 12 unit tests (edge cases & full coverage)
 ├── uploads/              # Temporary PDF storage
