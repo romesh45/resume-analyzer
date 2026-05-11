@@ -18,7 +18,7 @@
 
 ## 📌 Overview
 
-**Aura ATS** is a lightweight, production-ready resume analysis tool built with Python and Flask. Upload your resume (PDF or plain text), paste a job description, and instantly receive a match score with a detailed breakdown of matched and missing skills — no heavy ML libraries required.
+**Aura ATS** is a lightweight, production-ready resume analysis tool built with Python and Flask. Upload your resume (PDF or plain text), paste a job description, and instantly receive a match score with a detailed breakdown of matched and missing skills — no heavy ML libraries require
 
 ---
 
